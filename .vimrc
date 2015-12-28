@@ -217,7 +217,10 @@ if has('gui_running')
   " airline-syntastic
   " let g:airline#extensions#syntastic#enabled = 1
 
-endif " has('gui_running')
+else " has('gui_running')
+" set terminal colour to 256 on terminals (often using tmux, doesn't appear as 256 colour term)
+set t_Co=256
+endif 
 
 " config for custom FileType specific configuration
 " augroup prevents files being sourced again (like header file protector ifdefs in c++)
@@ -356,3 +359,4 @@ endif
 " NOTE: can search through directories (recursively) with **/ search pattern
 "     ie: :n **/*.rb to open all ruby files recursively from the current directory
 " :vim[grep] can also use **/
+
