@@ -1,71 +1,14 @@
 set nocompatible
 filetype off
 
-" source $VIMRUNTIME/mswin.vim
-" behave mswin
-
 " VUNDLE SPECIFIC CONFIG
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
-
-" theme specific configuration
-let g:airline_theme='papercolor'
-colorscheme xoria256
-
-" Font Specific content
-set encoding=utf-8
-set guifont=Inconsolata-g\ for\ Powerline:h10
-
-" airline specific font content
-let g:airline_powerline_fonts=1
-
-" set the airline symbols
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
-
-" airline-tabline options
-" enable tabline
-let g:airline#extensions#tabline#enabled = 1
-
-" show tab number beside buffer (and tabs?)
-"" let g:airline#extensions#tabline#show_tab_nr = 1
-
-let g:airline#extensions#tabline#show_buffers=1
-
-" display all tabs instead of "..." when more tabs than window can be displayed
-" Currently disabled 
-let g:airline#extensions#tabline#show_tabs = 1
-
-"" let g:airline#extensions#tabline#exclude_preview = 0
-
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-
-" vim-bufferline options
-" enable bufferline
-let g:airline#extensions#bufferline#enabled = 1 
-
-let g:airline#extensions#bufferline#overwrite_variables = 1
-
-" airline-syntastic
-" let g:airline#extensions#syntastic#enabled = 1
 
 " Keep Plugin commands between vundle#begin/end.
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim' " vundle
-
-Plugin 'bling/vim-airline' " airline for visual goodness
-
-Plugin 'bling/vim-bufferline' " bufferline for airline
 
 Plugin 'scrooloose/nerdcommenter' " comment related inserts plugin
 
@@ -76,6 +19,13 @@ Plugin 'jelera/vim-javascript-syntax' " javascript syntax enhancer
 Plugin 'ctrlpvim/ctrlp.vim' " fuzzy file/buffer/mru/tag finder for vim
 
 Plugin 'tpope/vim-unimpaired' " map [q ]q, etc to quickfix related iterations (and more)
+
+" gui focused plugins
+if has('gui')
+  Plugin 'bling/vim-airline' " airline for visual goodness
+
+  Plugin 'bling/vim-bufferline' " bufferline for airline
+endif
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -92,7 +42,11 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+" TODO: Refactor Config specific logic into ~/.vim/bundle/<plugin>/after directories
+
 "" General UI
+
+colorscheme xoria256
 
 " set leader command in map, ie ',' substituded with <leader>
 let mapleader=' '
@@ -142,10 +96,6 @@ nnoremap <Leader>P :CtrlPBuffer<CR>
 " backspace and cursor keys wrap to previous/next line
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
-" set initial size of window via number of lines and columns to be displayed
-set lines=60
-set columns=100
-
 " allow buffers not visible in a window to stay alive as "hidden" buffers
 set hidden
 
@@ -160,7 +110,7 @@ let g:ctrlp_extensions = ['autoignore']
 if v:version >= 700
   au BufLeave * let b:winview = winsaveview()
   au BufLeave * let b:cursorpos = getpos('.')
-  au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
+  au BufEnter * if(exists('b:winview'))   | call winrestview(b:winview)   | endif
   au BufEnter * if(exists('b:cursorpos')) | call setpos('.', b:cursorpos) | endif
 endif
 
@@ -189,20 +139,85 @@ set wildmenu " display graphical auto-complete menu in command menu
 set showmatch " once a closing bracket character is inserted, jump to other bracket briefly
 
 " store swap files in temporary directory
-set dir=$TEMP
+if has('win32')
+  set dir=$TEMP
+else
+  set dir=/tmp
+endif
 
-" GUI specific options
-" visual & modeless audoselect
-set guioptions +=a
-" remove GUI menu (m)
-set guioptions -=m
-"right & left-hand scrollbar (rl) (& when vertical split RL)
-set guioptions -=r
-set guioptions -=l
-set guioptions -=R
-set guioptions -=L
-" toolbar (T)
-set guioptions -=T
+"" GUI specific options
+
+if has('gui_running')
+ 
+  " set initial size of window via number of lines and columns to be displayed (GUI mode)
+  set lines=60
+  set columns=100
+  
+  " Font Specific content
+  set encoding=utf-8
+  set guifont=Inconsolata-g\ for\ Powerline:h10
+
+  " visual & modeless audoselect
+  set guioptions +=a
+  " remove GUI menu (m)
+  set guioptions -=m
+  "right & left-hand scrollbar (rl) (& when vertical split RL)
+  set guioptions -=r
+  set guioptions -=l
+  set guioptions -=R
+  set guioptions -=L
+  " toolbar (T)
+  set guioptions -=T
+
+  "" Airline Configs
+  " exists(':AirlineToggle')
+  
+  " set airline theme
+  let g:airline_theme='papercolor'
+
+  " airline specific font content
+  let g:airline_powerline_fonts=1
+
+  " set the airline symbols
+  if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
+  endif
+
+  let g:airline_left_sep = ''
+  let g:airline_left_alt_sep = ''
+  let g:airline_right_sep = ''
+  let g:airline_right_alt_sep = ''
+  let g:airline_symbols.branch = ''
+  let g:airline_symbols.readonly = ''
+  let g:airline_symbols.linenr = ''
+
+  " airline-tabline options
+  " enable tabline
+  let g:airline#extensions#tabline#enabled = 1
+
+  " show tab number beside buffer (and tabs?)
+  "" let g:airline#extensions#tabline#show_tab_nr = 1
+
+  let g:airline#extensions#tabline#show_buffers = 1
+
+  " display all tabs instead of "..." when more tabs than window can be displayed
+  " Currently disabled 
+  let g:airline#extensions#tabline#show_tabs = 1
+
+  "" let g:airline#extensions#tabline#exclude_preview = 0
+
+  let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+
+  " vim-bufferline options
+  " enable bufferline
+  let g:airline#extensions#bufferline#enabled = 1 
+
+  let g:airline#extensions#bufferline#overwrite_variables = 1
+
+  " airline-syntastic
+  " let g:airline#extensions#syntastic#enabled = 1
+
+endif " has('gui_running')
 
 " config for custom FileType specific configuration
 " augroup prevents files being sourced again (like header file protector ifdefs in c++)
@@ -212,9 +227,11 @@ augroup configgroup
     " AddTags to return all global 'java' tag files, assign them to tags variable
     " NOTE: local version of tags doesn't seem to work (or exist), opted to simply
     " overwrite instead of appending
-    autocmd FileType java let &l:tags= AddTags('java')
-
-    autocmd FileType c let &l:tags= AddTags('c')
+    " TODO: generalize AddTags to be OS portable
+    if has('win32')
+      autocmd FileType java let &l:tags= AddTags('java')
+      autocmd FileType c let &l:tags= AddTags('c')
+    endif
 
     autocmd FileType vim setlocal tabstop=2
     autocmd FileType vim setlocal softtabstop=2
@@ -237,6 +254,10 @@ augroup configgroup
     autocmd FileType scss setlocal softtabstop=2
     autocmd FileType scss setlocal shiftwidth=2
 
+    autocmd FileType yaml setlocal tabstop=2
+    autocmd FileType yaml setlocal softtabstop=2
+    autocmd FileType yaml setlocal shiftwidth=2
+
     autocmd FileType javascript call JavaScriptFold() " enable folding for javascript
 
     " use following to set tag directories for specific FileTypes
@@ -256,7 +277,7 @@ set foldcolumn=4
 " sets the default level of folds to begin folding syntactically
 set foldlevel=2
 
-" TAGS SECTION
+"" Tags Section
 " TODO: Automatically generate ctags, append/remove/etc on file save
 
 " set tags to include all tag files in the code/environment directory
@@ -268,21 +289,28 @@ set foldlevel=2
 " sets the tags field to include all tag files added to the tagfiles expression
 " NOTE: 'let &{option-name} .=' appends options to the result of let assignments, ie assign option to variable below (does NOT append ',' like set+= does), so appending first ',' manually
 "let &tags.= ',' . tagfiles
-if !exists('AddTags')
-  function AddTags(filetype)
-    let tagfiles= substitute(glob('C:/code/environment/tags/*.' . a:filetype . '.tags'), "\n", ",", "g")
-    return tagfiles
-  endfunction
+" TODO: implement global tag loading on unix environments
+if has('win32')
+  if !exists('AddTags')
+    function AddTags(filetype)
+      let tagfiles= substitute(glob('C:/code/environment/tags/*.' . a:filetype . '.tags'), "\n", ",", "g")
+      return tagfiles
+    endfunction
+  endif
 endif
 
-" expand the window to twice the side and vertical split
-if !exists('VerticalLayout')
-  command VLayout call VerticalLayout() 
+"" Custom Functions
 
-  function VerticalLayout()
-    let &columns += &columns " double size of window
-    vertical botright split  
-  endfunction
+" expand the window to twice the side and vertical split (GUI mode)
+if has('gui_running')
+  if !exists('VerticalLayout')
+    command VLayout call VerticalLayout() 
+
+    function VerticalLayout()
+      let &columns += &columns " double size of window
+      vertical botright split  
+    endfunction
+  endif
 endif
 
 " auto generated diff stuff (not sure what it does exactly)
