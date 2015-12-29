@@ -46,6 +46,11 @@ filetype plugin indent on    " required
 
 "" General UI
 
+" set terminal colour to 256 on terminals (often using tmux, doesn't appear as 256 colour term)
+if !has('gui_running')
+  set t_Co=256
+endif
+
 colorscheme xoria256
 
 " set leader command in map, ie ',' substituded with <leader>
@@ -217,9 +222,6 @@ if has('gui_running')
   " airline-syntastic
   " let g:airline#extensions#syntastic#enabled = 1
 
-else " has('gui_running')
-" set terminal colour to 256 on terminals (often using tmux, doesn't appear as 256 colour term)
-set t_Co=256
 endif 
 
 " config for custom FileType specific configuration
