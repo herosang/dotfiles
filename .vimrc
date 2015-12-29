@@ -80,16 +80,19 @@ noremap gh :bp<CR>
 noremap <F7> :bp<CR>
 noremap <F8> :bn<CR>
 
+" map <Leader>f to "print working file"
+nnoremap <Leader>f :echo expand('%:p')<CR>
+
 " map return to mark of position of last insert
 nnoremap '<space> '^
 
 " map <Leader>d to plugin bdelete WITHOUT closing window
 nnoremap <Leader>d :BD<CR>
 
-" set double space in normal mode to clear the search register
+" set <Leader>space in normal mode to clear the search register
 nnoremap <Leader><space> :let @/=""<CR>
 
-" map F2 to replace first character of every word on current line to uppercase
+" map <Leader>; to replace first character of every word on current line to uppercase
 nmap <Leader>; :s/\w\+/\u&/g<CR>:let @/=""<CR>
 
 " map <Leader> to p to open CtrlP in normal (file) mode
