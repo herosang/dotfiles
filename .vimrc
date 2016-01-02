@@ -129,7 +129,8 @@ set softtabstop=4 " how many spaces to insert when a <TAB> is pressed
 set shiftwidth=4
 set expandtab " always insert spaces instead of tabs
 
-set cursorline " display a line over cursor position
+" cursorline disabled for now as it slows page drawing too greatly with ruby syntax
+"set cursorline " display a line over cursor position
 
 " wrap lines at a character that occurs at 'breakat' instead of last character on screen
 set linebreak
