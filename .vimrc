@@ -124,9 +124,9 @@ endif
 
 " TEXT MANIPULATION/INPUT OPTS
 " TAB based input options
-set tabstop=4 " how many spaces a <TAB> is read as by vim
-set softtabstop=4 " how many spaces to insert when a <TAB> is pressed
-set shiftwidth=4
+set tabstop=2 " how many spaces a <TAB> is read as by vim
+set softtabstop=2 " how many spaces to insert when a <TAB> is pressed
+set shiftwidth=2
 set expandtab " always insert spaces instead of tabs
 
 " cursorline disabled for now as it slows page drawing too greatly with ruby syntax
@@ -242,30 +242,7 @@ augroup configgroup
       autocmd FileType c let &l:tags= AddTags('c')
     endif
 
-    autocmd FileType vim setlocal tabstop=2
-    autocmd FileType vim setlocal softtabstop=2
-    autocmd FileType vim setlocal shiftwidth=2
-    autocmd FileType vim setlocal tw=0
-
-    autocmd FileType html setlocal tabstop=2
-    autocmd FileType html setlocal softtabstop=2
-    autocmd FileType html setlocal shiftwidth=2
-
-    autocmd FileType ruby setlocal tabstop=2
-    autocmd FileType ruby setlocal softtabstop=2
-    autocmd FileType ruby setlocal shiftwidth=2
-
-    autocmd FileType eruby setlocal tabstop=2
-    autocmd FileType eruby setlocal softtabstop=2
-    autocmd FileType eruby setlocal shiftwidth=2
-
-    autocmd FileType scss setlocal tabstop=2
-    autocmd FileType scss setlocal softtabstop=2
-    autocmd FileType scss setlocal shiftwidth=2
-
-    autocmd FileType yaml setlocal tabstop=2
-    autocmd FileType yaml setlocal softtabstop=2
-    autocmd FileType yaml setlocal shiftwidth=2
+    autocmd FileType vim setlocal textwidth=0
 
     autocmd FileType javascript call JavaScriptFold() " enable folding for javascript
 
@@ -281,8 +258,8 @@ augroup END
 " folding options
 " fold based on FileType specific syntax
 set foldmethod=syntax
-" visual fold column to 4 levels
-set foldcolumn=4
+" visual fold column disabled, don't really find it useful
+"set foldcolumn=0
 " sets the default level of folds to begin folding syntactically
 set foldlevel=2
 
@@ -349,6 +326,15 @@ set diffexpr=MyDiff()
     silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
   endfunction
 endif
+
+" insert(s)/append(S) a single character. Can be repeated <count>s
+" NOTE: overwrites s and S commands, but can still be accessed with cl and cc respectively
+" grabbed from: (http://vim.wikia.com/wiki/Insert_a_single_character)
+function! RepeatChar(char, count)
+  return repeat(a:char, a:count)
+endfunction
+nnoremap s :<C-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<CR>
+nnoremap S :<C-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<CR>
 
 " COMMANDS TO REMEMBER
 " NOTE: you can swap between different selection modes (C-q, v, SHIFT-v) when already in selection
