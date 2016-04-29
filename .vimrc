@@ -5,6 +5,10 @@ filetype off
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 
+" due to new regex being slower for ruby syntax highlighting, using older regex
+" TODO: remove once ruby syntax file has been updated to be more efficient with new regex
+set re=1
+
 " Keep Plugin commands between vundle#begin/end.
 call vundle#begin()
 
@@ -19,6 +23,8 @@ Plugin 'jelera/vim-javascript-syntax' " javascript syntax enhancer
 Plugin 'ctrlpvim/ctrlp.vim' " fuzzy file/buffer/mru/tag finder for vim
 
 Plugin 'tpope/vim-unimpaired' " map [q ]q, etc to quickfix related iterations (and more)
+
+Plugin 'kchmck/vim-coffee-script' " coffescript syntax highlighting
 
 " gui focused plugins
 if has('gui')
@@ -85,6 +91,9 @@ nnoremap <Leader>f :echo expand('%:p')<CR>
 
 " map return to mark of position of last insert
 nnoremap '<space> '^
+
+" map return to mark of (exact) position of last insert (exat row/col ` instead of exact row ' )
+nnoremap <A-'><space> `^
 
 " map <Leader>d to plugin bdelete WITHOUT closing window
 nnoremap <Leader>d :BD<CR>
@@ -351,4 +360,5 @@ nnoremap S :<C-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<CR>
 " NOTE: can search through directories (recursively) with **/ search pattern
 "     ie: :n **/*.rb to open all ruby files recursively from the current directory
 " :vim[grep] can also use **/
+" NOTE: to yank text from a buffer into the command area (ie when searching) use / CTRL-R <buffer letter>
 
