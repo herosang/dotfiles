@@ -241,28 +241,34 @@ endif
 " augroup prevents files being sourced again (like header file protector ifdefs in c++)
 augroup configgroup
     autocmd!
+
+    " include project tags (stored within .git/tags)
+    "set tags=./.git/tags;$HOME,.git/tags;$HOME
+    set tags=./.git/tags;$HOME
     
-    " AddTags to return all global 'java' tag files, assign them to tags variable
-    " NOTE: local version of tags doesn't seem to work (or exist), opted to simply
-    " overwrite instead of appending
-    " TODO: generalize AddTags to be OS portable
+    " configure the global tags path depending on the OS
     if has('win32')
-      autocmd FileType java let &l:tags= AddTags('java')
-      autocmd FileType c let &l:tags= AddTags('c')
-    endif
+      let s:global_tags_path = 'C:/code/environment/tags/'
+    else
+      let s:global_tags_path = $HOME . '/.tags/'
+    end
+
+    " AddTags to return all global tags for the defined language (ie loading
+    " Java API tags or Ruby/Rails tags, etc)
+    autocmd FileType java let &l:tags= AddTags('java', s:global_tags_path)
+    autocmd FileType c let &l:tags= AddTags('c', s:global_tags_path)
+    autocmd FileType ruby let &l:tags= AddTags('ruby', s:global_tags_path)
+
+    " NOTE: to match specific file types, use pattern *.rb (instead of current *)
+    " update project (local directory) tags on file save
+    autocmd BufWritePost * call CreateTags()
+    " update project (local directory) tags on vim startup
+    autocmd VimEnter * call CreateTags()
 
     autocmd FileType vim setlocal textwidth=0
 
     autocmd FileType javascript call JavaScriptFold() " enable folding for javascript
-
-    " use following to set tag directories for specific FileTypes
-    " autocmd FileType java setlocal tags+=""
 augroup END
-
-
-" function loadTags()
-"   for fileName in split(glob(), '\n')
-" endfunction
 
 " folding options
 " fold based on FileType specific syntax
@@ -284,14 +290,27 @@ set foldlevel=2
 " sets the tags field to include all tag files added to the tagfiles expression
 " NOTE: 'let &{option-name} .=' appends options to the result of let assignments, ie assign option to variable below (does NOT append ',' like set+= does), so appending first ',' manually
 "let &tags.= ',' . tagfiles
-" TODO: implement global tag loading on unix environments
-if has('win32')
-  if !exists('AddTags')
-    function AddTags(filetype)
-      let tagfiles= substitute(glob('C:/code/environment/tags/*.' . a:filetype . '.tags'), "\n", ",", "g")
-      return tagfiles
-    endfunction
-  endif
+" matches using format:
+"   <tags_path>*.<filetype>.tags
+" tagfiles follow format:
+"   rails_global_whatever_here.ruby.tags
+"       java_api_whatever_here.java.tags
+if !exists('AddTags')
+  function AddTags(filetype, tags_path)
+    let tagfiles= substitute(glob(a:tags_path . '*.' . a:filetype . '.tags'), "\n", ",", "g")
+    return tagfiles
+  endfunction
+endif
+
+" create ctags
+" TODO: create ctags for BOTH project dir and global dirs (ie $HOME . '.tags/')
+if !exists(':call CreateTags')
+  function CreateTags()
+    " set tag_name to project_directory.filetype.tags
+    let l:tag_name = split(getcwd(), '/')[-1] . '.tags'
+    " generate ctags (relative to the directory they're being generated in, ie .git/)
+    silent execute "!ctags --tag-relative -R -f .git/tags &> /dev/null"
+  endfunction
 endif
 
 "" Custom Functions
