@@ -26,6 +26,10 @@ Plugin 'tpope/vim-unimpaired' " map [q ]q, etc to quickfix related iterations (a
 
 Plugin 'kchmck/vim-coffee-script' " coffescript syntax highlighting
 
+Plugin 'tpope/vim-fugitive' " git wrapper for vim
+
+Plugin 'tpope/vim-surround' " surround selection blocks
+
 " gui focused plugins
 if has('gui')
   Plugin 'bling/vim-airline' " airline for visual goodness
@@ -110,6 +114,9 @@ nnoremap <Leader>p :CtrlP<CR>
 " map <Leader> to p to open CtrlP in buffer mode 
 nnoremap <Leader>P :CtrlPBuffer<CR>
 
+" map <Alt-8> (• char on OSX) to set the search value to the word under the current cursor (wrapped with \< \>)
+nnoremap • :let @/="\\<" . expand("<cword>") . "\\>"<CR>
+
 " backspace and cursor keys wrap to previous/next line
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
@@ -117,19 +124,38 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 set hidden
 
 "" Configure CtrlP
+" read unlimited files in project (due to large Rails projects)
+let g:ctrlp_max_files = 0
+
+" NOTE: currently disabled: use ctrlp-cmatcher for more efficient matching
+"let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
+
+" use ag (the silver searcher) if it's provided on the machine
+if executable('ag')
+  " replace grep with ag
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " implement ag (the silver searcher) to match files (much faster)
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " no need for caching with ag
+  let g:ctrlp_use_caching = 0
+endif
+
 " enable the following plugins:
 "   autoignore: read .ctrlpignore in project root directory (similar to .gitignore)
-let g:ctrlp_extensions = ['autoignore']
+"let g:ctrlp_extensions = ['autoignore']
 
+" NOTE: currently disabled due to not saving on a per buffer basis. switching between 2 windows with same buffer causes issues
 " keep window position when returning to a hidden buffer (normally centres window on cursor)
 " this includes BOTH centering around cursor position AND cursors position on a line
 " grabbed from: (https://stackoverflow.com/questions/4251533/vim-keep-window-position-when-switching-buffers)
-if v:version >= 700
-  au BufLeave * let b:winview = winsaveview()
-  au BufLeave * let b:cursorpos = getpos('.')
-  au BufEnter * if(exists('b:winview'))   | call winrestview(b:winview)   | endif
-  au BufEnter * if(exists('b:cursorpos')) | call setpos('.', b:cursorpos) | endif
-endif
+"if v:version >= 700
+  "au BufLeave * let b:winview = winsaveview()
+  "au BufLeave * let b:cursorpos = getpos('.')
+  "au BufEnter * if(exists('b:winview'))   | call winrestview(b:winview)   | endif
+  "au BufEnter * if(exists('b:cursorpos')) | call setpos('.', b:cursorpos) | endif
+"endif
 
 " TEXT MANIPULATION/INPUT OPTS
 " TAB based input options
@@ -325,6 +351,11 @@ if has('gui_running')
       vertical botright split  
     endfunction
   endif
+endif
+
+" Gblame on word currently over cursor (ie a commit id on Gblame)
+if !exists('GbrowseHere')
+  command GbrowseHere execute "Gbrowse " . expand("<cword>")
 endif
 
 " auto generated diff stuff (not sure what it does exactly)
