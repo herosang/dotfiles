@@ -18,9 +18,9 @@ Plugin 'scrooloose/nerdcommenter' " comment related inserts plugin
 
 Plugin 'qpkorr/vim-bufkill' " bud/bd/bw without closing window plugin
 
-Plugin 'jelera/vim-javascript-syntax' " javascript syntax enhancer
-
 Plugin 'ctrlpvim/ctrlp.vim' " fuzzy file/buffer/mru/tag finder for vim
+
+Plugin 'pangloss/vim-javascript' " more advanced syntax highlighting for javascript
 
 Plugin 'tpope/vim-unimpaired' " map [q ]q, etc to quickfix related iterations (and more)
 
@@ -31,11 +31,9 @@ Plugin 'tpope/vim-fugitive' " git wrapper for vim
 Plugin 'tpope/vim-surround' " surround selection blocks
 
 " gui focused plugins
-if has('gui')
-  Plugin 'bling/vim-airline' " airline for visual goodness
+Plugin 'bling/vim-airline' " airline for visual goodness
 
-  Plugin 'bling/vim-bufferline' " bufferline for airline
-endif
+Plugin 'bling/vim-bufferline' " bufferline for airline
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -93,8 +91,8 @@ noremap <F8> :bn<CR>
 " map <Leader>f to "print working file"
 nnoremap <Leader>f :echo expand('%:p')<CR>
 
-" map return to mark of position of last insert
-nnoremap '<space> '^
+" map return to mark of position of last change
+nnoremap '<space> '.
 
 " map return to mark of (exact) position of last insert (exat row/col ` instead of exact row ' )
 nnoremap <A-'><space> `^
@@ -199,7 +197,9 @@ if has('gui_running')
   
   " Font Specific content
   set encoding=utf-8
-  set guifont=Inconsolata-g\ for\ Powerline:h10
+  if !has('nvim')
+    set guifont=Inconsolata-g\ for\ Powerline:h10
+  endif
 
   " visual & modeless audoselect
   set guioptions +=a
@@ -213,12 +213,7 @@ if has('gui_running')
   " toolbar (T)
   set guioptions -=T
 
-  "" Airline Configs
-  " exists(':AirlineToggle')
-  
-  " set airline theme
-  let g:airline_theme='papercolor'
-
+  "" Airline GUI Configs
   " airline specific font content
   let g:airline_powerline_fonts=1
 
@@ -234,34 +229,43 @@ if has('gui_running')
   let g:airline_symbols.branch = ''
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = ''
+endif
 
-  " airline-tabline options
-  " enable tabline
-  let g:airline#extensions#tabline#enabled = 1
+"" Airline Configs
 
-  " show tab number beside buffer (and tabs?)
-  "" let g:airline#extensions#tabline#show_tab_nr = 1
+" set airline theme
+let g:airline_theme='papercolor'
 
-  let g:airline#extensions#tabline#show_buffers = 1
+" airline-tabline options
+" enable tabline
+let g:airline#extensions#tabline#enabled = 1
 
-  " display all tabs instead of "..." when more tabs than window can be displayed
-  " Currently disabled 
-  let g:airline#extensions#tabline#show_tabs = 1
+" show tab number beside buffer (and tabs?)
+"" let g:airline#extensions#tabline#show_tab_nr = 1
 
-  "" let g:airline#extensions#tabline#exclude_preview = 0
+let g:airline#extensions#tabline#show_buffers = 1
 
-  let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+" display all tabs instead of "..." when more tabs than window can be displayed
+" Currently disabled 
+let g:airline#extensions#tabline#show_tabs = 1
 
-  " vim-bufferline options
-  " enable bufferline
-  let g:airline#extensions#bufferline#enabled = 1 
+"" let g:airline#extensions#tabline#exclude_preview = 0
 
-  let g:airline#extensions#bufferline#overwrite_variables = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 
-  " airline-syntastic
-  " let g:airline#extensions#syntastic#enabled = 1
+" vim-bufferline options
+" enable bufferline
+let g:airline#extensions#bufferline#enabled = 1 
 
-endif 
+let g:airline#extensions#bufferline#overwrite_variables = 1
+
+" airline-syntastic
+" let g:airline#extensions#syntastic#enabled = 1
+
+" fugitive options
+" disable showing branch name
+let g:airline#extensions#branch#enabled = 0
+
 
 " config for custom FileType specific configuration
 " augroup prevents files being sourced again (like header file protector ifdefs in c++)
@@ -292,8 +296,6 @@ augroup configgroup
     autocmd VimEnter * call CreateTags()
 
     autocmd FileType vim setlocal textwidth=0
-
-    autocmd FileType javascript call JavaScriptFold() " enable folding for javascript
 augroup END
 
 " folding options
@@ -328,14 +330,33 @@ if !exists('AddTags')
   endfunction
 endif
 
+function s:JobHandler(job_id, data, event)
+  if a:event == 'stdout'
+    let str = self.shell.' stdout: '.join(a:data)
+  elseif a:event == 'stderr'
+    let str = self.shell.' stderr: '.join(a:data)
+  else
+    let str = self.shell.' finished executing'
+  endif
+
+  echom str
+endfunction
+
+let s:callbacks = {
+\ 'on_stdout': function('s:JobHandler'),
+\ 'on_stderr': function('s:JobHandler'),
+\ 'on_exit': function('s:JobHandler')
+\ }
+
 " create ctags
 " TODO: create ctags for BOTH project dir and global dirs (ie $HOME . '.tags/')
 if !exists(':call CreateTags')
   function CreateTags()
     " set tag_name to project_directory.filetype.tags
-    let l:tag_name = split(getcwd(), '/')[-1] . '.tags'
+    "let l:tag_name = split(getcwd(), '/')[-1] . '.tags'
     " generate ctags (relative to the directory they're being generated in, ie .git/)
-    silent execute "!ctags --tag-relative -R -f .git/tags &> /dev/null"
+    "silent execute "!ctags --tag-relative -R -f .git/tags &> /dev/null"
+    call jobstart(['bash', '-c', 'if [ -f .git/tags.pid ]; then exit ;fi; echo $$ > .git/tags.pid && ctags -R --tag-relative --languages=ruby --exclude=.git --exclude=log -f .git/tags && rm .git/tags.pid'], extend({'shell': 'ctags generator'}, s:callbacks))
   endfunction
 endif
 
@@ -411,4 +432,3 @@ nnoremap S :<C-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<CR>
 "     ie: :n **/*.rb to open all ruby files recursively from the current directory
 " :vim[grep] can also use **/
 " NOTE: to yank text from a buffer into the command area (ie when searching) use / CTRL-R <buffer letter>
-
