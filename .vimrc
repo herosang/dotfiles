@@ -35,6 +35,10 @@ Plugin 'bling/vim-airline' " airline for visual goodness
 
 Plugin 'bling/vim-bufferline' " bufferline for airline
 
+Plugin 'kana/vim-textobj-user' " custom text objecs (required for vim-textobj-rubyblock plugin)
+
+Plugin 'nelstrom/vim-textobj-rubyblock' " add ruby block selections (ir/ar)
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -51,6 +55,9 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 
 " TODO: Refactor Config specific logic into ~/.vim/bundle/<plugin>/after directories
+
+" vim-textobj-rubyblock settings
+runtime macros/matchit.vim " required for plugin (NOTE: still works when disabled, not sure why)
 
 "" General UI
 
@@ -142,7 +149,8 @@ endif
 
 " enable the following plugins:
 "   autoignore: read .ctrlpignore in project root directory (similar to .gitignore)
-"let g:ctrlp_extensions = ['autoignore']
+"   tag:        enable `CtrlPTag` to search on tags
+let g:ctrlp_extensions = ['tag']
 
 " NOTE: currently disabled due to not saving on a per buffer basis. switching between 2 windows with same buffer causes issues
 " keep window position when returning to a hidden buffer (normally centres window on cursor)
