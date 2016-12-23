@@ -110,6 +110,9 @@ nnoremap <Leader>d :BD<CR>
 " set <Leader>space in normal mode to clear the search register
 nnoremap <Leader><space> :let @/=""<CR>
 
+" set <Leader>/ in normal mode to yank search register to * register
+nnoremap <Leader>/ :let @*=@/<CR>
+
 " map <Leader>; to replace first character of every word on current line to uppercase
 nmap <Leader>; :s/\w\+/\u&/g<CR>:let @/=""<CR>
 

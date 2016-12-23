@@ -41,11 +41,15 @@ alias tmux='tmux -2'
 alias devs='dev server'
 
 # convenience aliases for git
-alias gitg='git grep'
-alias gitd='git diff'
-alias gits='git status'
-alias gitb='git branch'
-alias gitc='git checkout'
+alias gg='git grep'
+alias gd='git diff'
+alias gl='git log'
+alias gs='git status'
+alias gb='git branch'
+alias ga='git add'
+alias gp='git push'
+alias gc='git checkout'
+alias gr='git rebase'
 
 
 ## PROMPT CONFIG ##
@@ -86,7 +90,7 @@ precmd() {
   regex='(!!([^!]+)!!)' # match expanded !!%b!! expression from vsc_info_msg_0_
   if [[ -n ${vcs_info_msg_0_} &&  ${vcs_info_msg_0_} =~ $regex ]]; then
     # display vcs_info and shorten any branches to 15 characters
-    VCS_PROMPT="${${vcs_info_msg_0_}/$match[1]/$(shorten $match[2] 15)}"
+    VCS_PROMPT="${${vcs_info_msg_0_}/$match[1]/$(shorten $match[2] 30)}"
   else
     VCS_PROMPT=""
   fi
@@ -116,11 +120,23 @@ zle -N zle-line-finish # executed at the end of a prompts execution
 # set timeout for switching modes to be very low
 export KEYTIMEOUT=1
 
+# android SDK path
+PATH=$PATH:/Users/bl/Library/Android/sdk/platform-tools
+
+# add gpg1 to path (since we can't use gpg2)
+PATH="/usr/local/opt/gnupg/libexec/gpgbin:$PATH"
+
 ## SHOPIFY CONFIG ##
 # personal access token for homebrew (due to high request rate at Shopify)
 export HOMEBREW_GITHUB_API_TOKEN=a2d4b7e0fb7c4f1d3d81ff7b581c48ed3944f0df
+
+# GOPATH used for cardsink
+export GOPATH=$HOME
+export PATH=$GOPATH/bin:$PATH
 
 # PRY env variable used for enabling pry on shopify
 export PRY=1
 
 [ -f /opt/dev/dev.sh ] && source /opt/dev/dev.sh
+
+export PATH="$HOME/.yarn/bin:$PATH"
