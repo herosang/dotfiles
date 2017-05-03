@@ -33,6 +33,8 @@ Plugin 'tpope/vim-surround' " surround selection blocks
 " gui focused plugins
 Plugin 'bling/vim-airline' " airline for visual goodness
 
+Plugin 'vim-airline/vim-airline-themes' " themes for airline
+
 Plugin 'bling/vim-bufferline' " bufferline for airline
 
 Plugin 'kana/vim-textobj-user' " custom text objecs (required for vim-textobj-rubyblock plugin)
@@ -341,7 +343,7 @@ if !exists('AddTags')
   endfunction
 endif
 
-function s:JobHandler(job_id, data, event)
+function s:JobHandler(job_id, data, event) dict
   if a:event == 'stdout'
     let str = self.shell.' stdout: '.join(a:data)
   elseif a:event == 'stderr'
@@ -421,7 +423,7 @@ endif
 " insert(s)/append(S) a single character. Can be repeated <count>s
 " NOTE: overwrites s and S commands, but can still be accessed with cl and cc respectively
 " grabbed from: (http://vim.wikia.com/wiki/Insert_a_single_character)
-function! RepeatChar(char, count)
+function! RepeatChar(char, count) dict
   return repeat(a:char, a:count)
 endfunction
 nnoremap s :<C-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<CR>
