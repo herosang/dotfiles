@@ -207,12 +207,6 @@ if has('gui_running')
   " set initial size of window via number of lines and columns to be displayed (GUI mode)
   set lines=60
   set columns=100
-  
-  " Font Specific content
-  set encoding=utf-8
-  if !has('nvim')
-    set guifont=Inconsolata-g\ for\ Powerline:h10
-  endif
 
   " visual & modeless audoselect
   set guioptions +=a
@@ -225,24 +219,35 @@ if has('gui_running')
   set guioptions -=L
   " toolbar (T)
   set guioptions -=T
-
-  "" Airline GUI Configs
-  " airline specific font content
-  let g:airline_powerline_fonts=1
-
-  " set the airline symbols
-  if !exists('g:airline_symbols')
-      let g:airline_symbols = {}
-  endif
-
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-  let g:airline_symbols.branch = ''
-  let g:airline_symbols.readonly = ''
-  let g:airline_symbols.linenr = ''
 endif
+
+"" Airline/Font specific settings
+
+" Font Specific content
+set encoding=utf-8
+
+" ignore if nvim (since it technically doesn't support guifont)
+" terminal based nvim sessions instead use terminal to set font (ie set font in iTerm2)
+if !has('nvim')
+  set guifont=Inconsolata-g\ for\ Powerline:h12
+endif
+
+"" Airline GUI Configs
+" airline specific font content
+let g:airline_powerline_fonts=1
+
+" set the airline symbols
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
 
 "" Airline Configs
 
