@@ -28,6 +28,8 @@ Plugin 'kchmck/vim-coffee-script' " coffescript syntax highlighting
 
 Plugin 'tpope/vim-fugitive' " git wrapper for vim
 
+Plugin 'tpope/vim-rhubarb' " fugitive extension for web actions (ie Gbrowse)
+
 Plugin 'tpope/vim-surround' " surround selection blocks
 
 " gui focused plugins
