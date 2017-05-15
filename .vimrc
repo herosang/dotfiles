@@ -117,6 +117,9 @@ nnoremap <Leader><space> :let @/=""<CR>
 " set <Leader>/ in normal mode to yank search register to * register
 nnoremap <Leader>/ :let @*=@/<CR>
 
+" set <Leader>% in normal mode to yank file path register to * register
+nnoremap <Leader>% :let @*=@%<CR>
+
 " map <Leader>; to replace first character of every word on current line to uppercase
 nmap <Leader>; :s/\w\+/\u&/g<CR>:let @/=""<CR>
 
@@ -291,6 +294,9 @@ let g:airline#extensions#branch#enabled = 0
 " augroup prevents files being sourced again (like header file protector ifdefs in c++)
 augroup configgroup
     autocmd!
+
+    " add jbuilder syntax highlighting
+    autocmd BufNewFile,BufRead *.jbuilder set ft=ruby
 
     " include project tags (stored within .git/tags)
     "set tags=./.git/tags;$HOME,.git/tags;$HOME

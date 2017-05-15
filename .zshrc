@@ -51,6 +51,8 @@ alias gp='git push'
 alias gc='git checkout'
 alias gr='git rebase'
 
+# clear terminal && tmux shell at the same time
+alias clear!='clear && tmux clear-history'
 
 ## PROMPT CONFIG ##
 # set execute prompt function to set prompt to redhat
@@ -81,7 +83,7 @@ zstyle ':vcs_info:git*' formats 			"%F{5}[%F{3}!!%b!!%F{5}]%F{7}"
 # "actoun" state formatting (ie mid-rebase/merge)
 zstyle ':vcs_info:git*' actionformats "%F{5}[%F{3}!!%b!!%F{5}]%F{7} %F{2}(%F{4}%a%F{2})%F{7}"
 # keep up to date with staging changes (NOTE: can cause slow-down on large projects)
-#zstyle ':vcs_info:*' check-for-changes true 
+zstyle ':vcs_info:*' check-for-changes true
 
 # prepare variables for vcs_info in precmd
 precmd() {
@@ -120,23 +122,41 @@ zle -N zle-line-finish # executed at the end of a prompts execution
 # set timeout for switching modes to be very low
 export KEYTIMEOUT=1
 
-# android SDK path
-PATH=$PATH:/Users/bl/Library/Android/sdk/platform-tools
+### WEALTHSIMPLE SPECIFIC CONFIGS
+# set rbenv path
+export PATH="$HOME/.rbenv/bin:$PATH"
 
-# add gpg1 to path (since we can't use gpg2)
-PATH="/usr/local/opt/gnupg/libexec/gpgbin:$PATH"
+# init rbenv (not sure if this should happen on every startup)
+eval "$(rbenv init -)"
 
-## SHOPIFY CONFIG ##
-# personal access token for homebrew (due to high request rate at Shopify)
-export HOMEBREW_GITHUB_API_TOKEN=a2d4b7e0fb7c4f1d3d81ff7b581c48ed3944f0df
+# load avn
+[[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh"
 
-# GOPATH used for cardsink
-export GOPATH=$HOME
-export PATH=$GOPATH/bin:$PATH
+# add eb to PATH
+export PATH="$HOME/Library/Python/2.7/bin:$PATH"
 
-# PRY env variable used for enabling pry on shopify
-export PRY=1
+# WS scripps
+export PATH="$HOME/code/ws/scripts/bin/:$PATH"
 
-[ -f /opt/dev/dev.sh ] && source /opt/dev/dev.sh
+### SHOPIFY SPECIFIC CONFIGS
 
-export PATH="$HOME/.yarn/bin:$PATH"
+## android SDK path
+#PATH=$PATH:/Users/bl/Library/Android/sdk/platform-tools
+
+## add gpg1 to path (since we can't use gpg2)
+#PATH="/usr/local/opt/gnupg/libexec/gpgbin:$PATH"
+
+### SHOPIFY CONFIG ##
+## personal access token for homebrew (due to high request rate at Shopify)
+#export HOMEBREW_GITHUB_API_TOKEN=a2d4b7e0fb7c4f1d3d81ff7b581c48ed3944f0df
+
+## GOPATH used for cardsink
+#export GOPATH=$HOME
+#export PATH=$GOPATH/bin:$PATH
+
+## PRY env variable used for enabling pry on shopify
+#export PRY=1
+
+#[ -f /opt/dev/dev.sh ] && source /opt/dev/dev.sh
+
+#export PATH="$HOME/.yarn/bin:$PATH"
