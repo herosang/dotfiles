@@ -96,9 +96,9 @@ augroup configgroup
 
     " AddTags to return all global tags for the defined language (ie loading
     " Java API tags or Ruby/Rails tags, etc)
-    autocmd FileType java let &l:tags= AddTags('java', s:global_tags_path)
-    autocmd FileType c let &l:tags= AddTags('c', s:global_tags_path)
-    autocmd FileType ruby let &l:tags= AddTags('ruby', s:global_tags_path)
+    "autocmd FileType java let &l:tags= AddTags('java', s:global_tags_path)
+    "autocmd FileType c let &l:tags= AddTags('c', s:global_tags_path)
+    "autocmd FileType ruby let &l:tags= AddTags('ruby', s:global_tags_path)
 
     " NOTE: to match specific file types, use pattern *.rb (instead of current *)
     " update project (local directory) tags on file save
