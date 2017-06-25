@@ -1,64 +1,11 @@
 set nocompatible
 filetype off
 
-" VUNDLE SPECIFIC CONFIG
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
+source ~/.vim/plugins.vim
 
 " due to new regex being slower for ruby syntax highlighting, using older regex
 " TODO: remove once ruby syntax file has been updated to be more efficient with new regex
 set re=1
-
-" Keep Plugin commands between vundle#begin/end.
-call vundle#begin()
-
-Plugin 'VundleVim/Vundle.vim' " vundle
-
-Plugin 'scrooloose/nerdcommenter' " comment related inserts plugin
-
-Plugin 'qpkorr/vim-bufkill' " bud/bd/bw without closing window plugin
-
-Plugin 'ctrlpvim/ctrlp.vim' " fuzzy file/buffer/mru/tag finder for vim
-
-Plugin 'pangloss/vim-javascript' " more advanced syntax highlighting for javascript
-
-Plugin 'tpope/vim-unimpaired' " map [q ]q, etc to quickfix related iterations (and more)
-
-Plugin 'kchmck/vim-coffee-script' " coffescript syntax highlighting
-
-Plugin 'tpope/vim-fugitive' " git wrapper for vim
-
-Plugin 'tpope/vim-rhubarb' " fugitive extension for web actions (ie Gbrowse)
-
-Plugin 'tpope/vim-surround' " surround selection blocks
-
-" gui focused plugins
-Plugin 'bling/vim-airline' " airline for visual goodness
-
-Plugin 'vim-airline/vim-airline-themes' " themes for airline
-
-Plugin 'bling/vim-bufferline' " bufferline for airline
-
-Plugin 'kana/vim-textobj-user' " custom text objecs (required for vim-textobj-rubyblock plugin)
-
-Plugin 'nelstrom/vim-textobj-rubyblock' " add ruby block selections (ir/ar)
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-
-" TODO: Refactor Config specific logic into ~/.vim/bundle/<plugin>/after directories
 
 " vim-textobj-rubyblock settings
 runtime macros/matchit.vim " required for plugin (NOTE: still works when disabled, not sure why)
@@ -72,9 +19,6 @@ endif
 
 colorscheme xoria256
 
-" set leader command in map, ie ',' substituded with <leader>
-let mapleader=' '
-
 " search related options
 set is
 set hlsearch "highlight search results
@@ -82,55 +26,8 @@ set incsearch " match search while entering text
 set number
 syntax on
 
-"" Custom mappings
-" replace normal j & k up/down lines with gj & gk up/down VISUAL lines
-" this allows for iterating over lines that are wrapped visually, but still
-" count as just 1 line
-nnoremap j gj
-nnoremap k gk
-
-" iterate over bufers using gh and gl movement keys (gh/gl not used, rebound to j and k)
-" noremap to allow breaking out of visual selection
-" NOTE: unbinds existing gl functionality (although uncertain how useful it is)
-noremap gl :bn<CR>
-noremap gh :bp<CR>
-
-" also map F7 and F8 to convenience iterating over buffers (
-noremap <F7> :bp<CR>
-noremap <F8> :bn<CR>
-
-" map <Leader>f to "print working file"
-nnoremap <Leader>f :echo expand('%:p')<CR>
-
-" map return to mark of position of last change
-nnoremap '<space> '.
-
-" map return to mark of (exact) position of last insert (exat row/col ` instead of exact row ' )
-nnoremap <A-'><space> `^
-
-" map <Leader>d to plugin bdelete WITHOUT closing window
-nnoremap <Leader>d :BD<CR>
-
-" set <Leader>space in normal mode to clear the search register
-nnoremap <Leader><space> :let @/=""<CR>
-
-" set <Leader>/ in normal mode to yank search register to * register
-nnoremap <Leader>/ :let @*=@/<CR>
-
-" set <Leader>% in normal mode to yank file path register to * register
-nnoremap <Leader>% :let @*=@%<CR>
-
-" map <Leader>; to replace first character of every word on current line to uppercase
-nmap <Leader>; :s/\w\+/\u&/g<CR>:let @/=""<CR>
-
-" map <Leader> to p to open CtrlP in normal (file) mode
-nnoremap <Leader>p :CtrlP<CR>
-
-" map <Leader> to p to open CtrlP in buffer mode 
-nnoremap <Leader>P :CtrlPBuffer<CR>
-
-" map <Alt-8> (• char on OSX) to set the search value to the word under the current cursor (wrapped with \< \>)
-nnoremap • :let @/="\\<" . expand("<cword>") . "\\>"<CR>
+" Custon mappings
+source ~/.vim/mappings.vim
 
 " backspace and cursor keys wrap to previous/next line
 set backspace=indent,eol,start whichwrap+=<,>,[,]
@@ -138,40 +35,8 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 " allow buffers not visible in a window to stay alive as "hidden" buffers
 set hidden
 
-"" Configure CtrlP
-" read unlimited files in project (due to large Rails projects)
-let g:ctrlp_max_files = 0
-
-" NOTE: currently disabled: use ctrlp-cmatcher for more efficient matching
-"let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
-
-" use ag (the silver searcher) if it's provided on the machine
-if executable('ag')
-  " replace grep with ag
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " implement ag (the silver searcher) to match files (much faster)
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " no need for caching with ag
-  let g:ctrlp_use_caching = 0
-endif
-
-" enable the following plugins:
-"   autoignore: read .ctrlpignore in project root directory (similar to .gitignore)
-"   tag:        enable `CtrlPTag` to search on tags
-let g:ctrlp_extensions = ['tag']
-
-" NOTE: currently disabled due to not saving on a per buffer basis. switching between 2 windows with same buffer causes issues
-" keep window position when returning to a hidden buffer (normally centres window on cursor)
-" this includes BOTH centering around cursor position AND cursors position on a line
-" grabbed from: (https://stackoverflow.com/questions/4251533/vim-keep-window-position-when-switching-buffers)
-"if v:version >= 700
-  "au BufLeave * let b:winview = winsaveview()
-  "au BufLeave * let b:cursorpos = getpos('.')
-  "au BufEnter * if(exists('b:winview'))   | call winrestview(b:winview)   | endif
-  "au BufEnter * if(exists('b:cursorpos')) | call setpos('.', b:cursorpos) | endif
-"endif
+"" CtrlP config
+source ~/.vim/ctrlp.vim
 
 " TEXT MANIPULATION/INPUT OPTS
 " TAB based input options
@@ -205,90 +70,11 @@ else
   set dir=/tmp
 endif
 
-"" GUI specific options
+"" GUI configs
+source ~/.vim/gui.vim
 
-if has('gui_running')
- 
-  " set initial size of window via number of lines and columns to be displayed (GUI mode)
-  set lines=60
-  set columns=100
-
-  " visual & modeless audoselect
-  set guioptions +=a
-  " remove GUI menu (m)
-  set guioptions -=m
-  "right & left-hand scrollbar (rl) (& when vertical split RL)
-  set guioptions -=r
-  set guioptions -=l
-  set guioptions -=R
-  set guioptions -=L
-  " toolbar (T)
-  set guioptions -=T
-endif
-
-"" Airline/Font specific settings
-
-" Font Specific content
-set encoding=utf-8
-
-" ignore if nvim (since it technically doesn't support guifont)
-" terminal based nvim sessions instead use terminal to set font (ie set font in iTerm2)
-if !has('nvim')
-  set guifont=Inconsolata-g\ for\ Powerline:h12
-endif
-
-"" Airline GUI Configs
-" airline specific font content
-let g:airline_powerline_fonts=1
-
-" set the airline symbols
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
-
-"" Airline Configs
-
-" set airline theme
-let g:airline_theme='papercolor'
-
-" airline-tabline options
-" enable tabline
-let g:airline#extensions#tabline#enabled = 1
-
-" show tab number beside buffer (and tabs?)
-"" let g:airline#extensions#tabline#show_tab_nr = 1
-
-let g:airline#extensions#tabline#show_buffers = 1
-
-" display all tabs instead of "..." when more tabs than window can be displayed
-" Currently disabled 
-let g:airline#extensions#tabline#show_tabs = 1
-
-"" let g:airline#extensions#tabline#exclude_preview = 0
-
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-
-" vim-bufferline options
-" enable bufferline
-let g:airline#extensions#bufferline#enabled = 1 
-
-let g:airline#extensions#bufferline#overwrite_variables = 1
-
-" airline-syntastic
-" let g:airline#extensions#syntastic#enabled = 1
-
-" fugitive options
-" disable showing branch name
-let g:airline#extensions#branch#enabled = 0
-
+"" Airline configs
+source ~/.vim/airline.vim
 
 " config for custom FileType specific configuration
 " augroup prevents files being sourced again (like header file protector ifdefs in c++)
@@ -299,15 +85,14 @@ augroup configgroup
     autocmd BufNewFile,BufRead *.jbuilder set ft=ruby
 
     " include project tags (stored within .git/tags)
-    "set tags=./.git/tags;$HOME,.git/tags;$HOME
-    set tags=./.git/tags;$HOME
+    "set tags=./.git/tags;$HOME
     
     " configure the global tags path depending on the OS
-    if has('win32')
-      let s:global_tags_path = 'C:/code/environment/tags/'
-    else
-      let s:global_tags_path = $HOME . '/.tags/'
-    end
+    "if has('win32')
+      "let s:global_tags_path = 'C:/code/environment/tags/'
+    "else
+      "let s:global_tags_path = $HOME . '/.tags/'
+    "end
 
     " AddTags to return all global tags for the defined language (ie loading
     " Java API tags or Ruby/Rails tags, etc)
@@ -332,115 +117,22 @@ set foldmethod=syntax
 " sets the default level of folds to begin folding syntactically
 set foldlevel=2
 
-"" Tags Section
-" TODO: Automatically generate ctags, append/remove/etc on file save
+"" ctags specific config
+source ~/.vim/add_tags.vim
 
-" set tags to include all tag files in the code/environment directory
-" following line assigns all tags stored in code/environment to tagfiles variable
-" NOTE: glob returns all files matched within the wildcard expression, delimited by '\n'
-" NOTE: all '\n' found in the result of the glob function are replaced with ',' delims used by vim to delimit multiple file entries in the 'tags' vim option
-"let tagfiles= substitute(glob('C:/code/environment/tags/*.tags'), "\n", ",", "g")
-
-" sets the tags field to include all tag files added to the tagfiles expression
-" NOTE: 'let &{option-name} .=' appends options to the result of let assignments, ie assign option to variable below (does NOT append ',' like set+= does), so appending first ',' manually
-"let &tags.= ',' . tagfiles
-" matches using format:
-"   <tags_path>*.<filetype>.tags
-" tagfiles follow format:
-"   rails_global_whatever_here.ruby.tags
-"       java_api_whatever_here.java.tags
-if !exists('AddTags')
-  function AddTags(filetype, tags_path)
-    let tagfiles= substitute(glob(a:tags_path . '*.' . a:filetype . '.tags'), "\n", ",", "g")
-    return tagfiles
-  endfunction
-endif
-
-function s:JobHandler(job_id, data, event) dict
-  if a:event == 'stdout'
-    let str = self.shell.' stdout: '.join(a:data)
-  elseif a:event == 'stderr'
-    let str = self.shell.' stderr: '.join(a:data)
-  else
-    let str = self.shell.' finished executing'
-  endif
-
-  echom str
-endfunction
-
-let s:callbacks = {
-\ 'on_stdout': function('s:JobHandler'),
-\ 'on_stderr': function('s:JobHandler'),
-\ 'on_exit': function('s:JobHandler')
-\ }
-
-" create ctags
-" TODO: create ctags for BOTH project dir and global dirs (ie $HOME . '.tags/')
-if !exists(':call CreateTags')
-  function CreateTags()
-    " set tag_name to project_directory.filetype.tags
-    "let l:tag_name = split(getcwd(), '/')[-1] . '.tags'
-    " generate ctags (relative to the directory they're being generated in, ie .git/)
-    "silent execute "!ctags --tag-relative -R -f .git/tags &> /dev/null"
-    call jobstart(['bash', '-c', 'if [ -f .git/tags.pid ]; then exit ;fi; echo $$ > .git/tags.pid && ctags -R --tag-relative --languages=ruby --exclude=.git --exclude=log -f .git/tags && rm .git/tags.pid'], extend({'shell': 'ctags generator'}, s:callbacks))
-  endfunction
-endif
+source ~/.vim/create_tags.vim
 
 "" Custom Functions
 
-" expand the window to twice the side and vertical split (GUI mode)
-if has('gui_running')
-  if !exists('VerticalLayout')
-    command VLayout call VerticalLayout() 
+source ~/.vim/vertical_layout.vim
 
-    function VerticalLayout()
-      let &columns += &columns " double size of window
-      vertical botright split  
-    endfunction
-  endif
-endif
+source ~/.vim/rhubarb.vim
 
-" Gblame on word currently over cursor (ie a commit id on Gblame)
-if !exists('GbrowseHere')
-  command GbrowseHere execute "Gbrowse " . expand("<cword>")
-endif
+source ~/.vim/fzf.vim
 
-" auto generated diff stuff (not sure what it does exactly)
-if !exists('MyDiff')
-set diffexpr=MyDiff()
-  function MyDiff()
-    let opt = '-a --binary '
-    if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-    if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-    let arg1 = v:fname_in
-    if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-    let arg2 = v:fname_new
-    if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-    let arg3 = v:fname_out
-    if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-    let eq = ''
-    if $VIMRUNTIME =~ ' '
-      if &sh =~ '\<cmd'
-        let cmd = '""' . $VIMRUNTIME . '\diff"'
-        let eq = '"'
-      else
-        let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-      endif
-    else
-      let cmd = $VIMRUNTIME . '\diff'
-    endif
-    silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-  endfunction
-endif
+source ~/.vim/repeat_char.vim
 
-" insert(s)/append(S) a single character. Can be repeated <count>s
-" NOTE: overwrites s and S commands, but can still be accessed with cl and cc respectively
-" grabbed from: (http://vim.wikia.com/wiki/Insert_a_single_character)
-function! RepeatChar(char, count) dict
-  return repeat(a:char, a:count)
-endfunction
-nnoremap s :<C-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<CR>
-nnoremap S :<C-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<CR>
+source ~/.vim/my_diff.vim
 
 " COMMANDS TO REMEMBER
 " NOTE: you can swap between different selection modes (C-q, v, SHIFT-v) when already in selection
