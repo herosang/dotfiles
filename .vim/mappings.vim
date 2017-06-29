@@ -50,4 +50,15 @@ nnoremap <Leader>p :CtrlP<CR>
 nnoremap <Leader>P :CtrlPBuffer<CR>
 
 " map <Alt-8> (• char on OSX) to set the search value to the word under the current cursor (wrapped with \< \>)
-nnoremap • :let @/="\\<" . expand("<cword>") . "\\>"<CR>
+nnoremap <A-8> :let @/="\\<" . expand("<cword>") . "\\>"<CR>
+
+" FZF mappings
+
+" map ctrl+f to open FZF files search
+nnoremap <c-f> :Files<CR>
+
+" map <Leader>a to ag search
+nnoremap <Leader>a :Ag<CR>
+
+" map <Leader>a to search tags
+nnoremap <Leader>t :Tag<CR>
