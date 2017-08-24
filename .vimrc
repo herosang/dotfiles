@@ -107,6 +107,9 @@ augroup configgroup
     autocmd VimEnter * call CreateTags()
 
     autocmd FileType vim setlocal textwidth=0
+
+    " TODO: resolve this to work correctly
+    "autocmd VimResized * execute "<C-W> ="
 augroup END
 
 " folding options
@@ -138,10 +141,10 @@ source ~/.vim/my_diff.vim
 " NOTE: you can swap between different selection modes (C-q, v, SHIFT-v) when already in selection
 " NOTE: you can insert into both ends of block selection (or beginning of line selection) with either I or A after making selection
 " NOTE: commands using i" or a" will jump automatically to the first occurance in the line and execute (ie ci" before the first occurance will jump to, and perform ci")
-" NOTE: can make word selections using s, paragraphs using p
-" evisual selection> then gq to format (insert <EOL>s) around newline wrapped tex
-" evisual selection> then J to merge selected lines into one line
-" evisual selection> then o to jump to beginning/end of selection
+" NOTE: can make sentence selections using s, paragraphs using p
+" <visual selection> then gq to format (insert <EOL>s) around newline wrapped tex
+" <visual selection> then J to merge selected lines into one line
+" <visual selection> then o to jump to beginning/end of selection
 
 " :[line-to-move-range]m {line-to-insert-at} moves line to position (can use . for line under cursor) ie :1m. to move 1st line to current cursor position
 

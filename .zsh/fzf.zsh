@@ -21,4 +21,3 @@ ftpane() {
     tmux select-window -t $target_window
   fi
 }
-

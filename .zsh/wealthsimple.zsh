@@ -17,3 +17,5 @@ export PATH="$HOME/code/ws/scripts/bin/:$PATH"
 # wolfman
 alias wolfman="$HOME/code/ws/wolfman/bin/wolfman"
 
+# explicitly use node_6 LTS
+echo 'export PATH="/usr/local/opt/node@6/bin:$PATH"' >> ~/.zshrc
