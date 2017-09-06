@@ -17,6 +17,9 @@ export KEYTIMEOUT=1
 # source files
 typeset -ga sources
 
+# exports
+sources+="$HOME/.zsh/exports.zsh"
+
 # bindings
 sources+="$HOME/.zsh/bindings.zsh"
 
@@ -30,10 +33,10 @@ sources+="$HOME/.zsh/prompt.zsh"
 sources+="$HOME/.zsh/fzf.zsh"
 
 # Wealthsimple specific configs
-sources+="$HOME/.zsh/wealthsimple.zsh"
+# sources+="$HOME/.zsh/wealthsimple.zsh"
 
 # Shopify specific config
-sources+="$HOME/.zsh/shopify.zsh"
+# sources+="$HOME/.zsh/shopify.zsh"
 
 # include all sources
 foreach file (`echo $sources`)
@@ -41,4 +44,3 @@ foreach file (`echo $sources`)
     source $file
   fi
 end
-

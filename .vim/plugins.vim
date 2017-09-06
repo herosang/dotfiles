@@ -31,6 +31,9 @@ Plugin 'kana/vim-textobj-user' " custom text objecs (required for vim-textobj-ru
 
 Plugin 'nelstrom/vim-textobj-rubyblock' " add ruby block selections (ir/ar)
 
+" TODO: look to use vim-plug (as it supports using local install at `/usr/local/opt/fzf` fzf instead of cloning whole project)
+Plugin 'junegunn/fzf' " Baseline fzf plugin (still required for vim)
+
 Plugin 'junegunn/fzf.vim' " FZF integration plugin
 
 " gui focused plugins

@@ -14,3 +14,6 @@ alias tmux='tmux -2'
 PATH=$PATH:~/.gem/ruby/2.2.0/bin
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+# initialize fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
