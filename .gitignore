@@ -1,0 +1,24 @@
+# blacklist all folders in root repo directory
+/*
+
+# whitelist .gitignore
+!.gitignore
+
+# whitelist directories
+!.config/
+!.vim/
+!.zsh/
+
+# blacklist most of .config
+.config/*
+!.config/nvim/init.vim
+
+# blacklist vim/bundle (managed by Vundler)
+.vim/bundle
+
+# whitelist config files
+!.bashrc
+!.gitmodules
+!.pryrc
+!.vimrc
+!.zshrc
