@@ -125,6 +125,9 @@ source ~/.vim/add_tags.vim
 
 source ~/.vim/create_tags.vim
 
+"" Vim JSX config
+source ~/.vim/jsx.vim
+
 "" Custom Functions
 
 source ~/.vim/vertical_layout.vim

@@ -22,3 +22,5 @@ alias gr='git rebase'
 # clear terminal && tmux shell at the same time
 alias clear!='clear && tmux clear-history'
 
+# aga to ag -all-types (ignores .ignore BUT not hidden files)
+alias aga='ag --all-types'

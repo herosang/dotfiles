@@ -11,6 +11,15 @@
 
 # blacklist most of .config
 .config/*
+!.config/alacritty
+!.config/nvim
+
+# .alacritty
+.config/alacritty/*
+!.config/alacritty/alacritty.yml
+
+# nvim
+.config/nvim/*
 !.config/nvim/init.vim
 
 # blacklist vim/bundle (managed by Vundler)
