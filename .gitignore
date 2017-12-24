@@ -24,6 +24,7 @@
 
 # blacklist vim/bundle (managed by Vundler)
 .vim/bundle
+**/.DS_Store
 
 # whitelist config files
 !.bashrc
